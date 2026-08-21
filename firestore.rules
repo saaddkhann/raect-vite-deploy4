@@ -1,0 +1,32 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function signedIn() { return request.auth != null; }
+    function admin() {
+      return signedIn() && exists(/databases/$(database)/documents/admins/$(request.auth.uid)) && get(/databases/$(database)/documents/admins/$(request.auth.uid)).data.active == true;
+    }
+
+    match /admins/{uid} {
+      allow read: if signedIn() && request.auth.uid == uid || admin();
+      allow write: if false;
+    }
+
+    match /registrations/{registrationId} {
+      allow create: if request.resource.data.registrationId == registrationId
+        && request.resource.data.status == 'pending'
+        && request.resource.data.paymentStatus == 'submitted'
+        && request.resource.data.name is string
+        && request.resource.data.mobile is string
+        && request.resource.data.playingRole is string
+        && request.resource.data.battingStyle is string
+        && request.resource.data.aadhaarUrl is string
+        && request.resource.data.paymentUrl is string;
+      allow read, update, delete: if admin();
+    }
+
+    match /teams/{teamId} {
+      allow read: if true;
+      allow write: if admin();
+    }
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "name": "madanpur-functions",
+  "private": true,
+  "engines": { "node": "20" },
+  "scripts": { "lint": "echo no-lint", "serve": "firebase emulators:start --only functions", "deploy": "firebase deploy --only functions" },
+  "dependencies": {
+    "firebase-admin": "^13.4.0",
+    "firebase-functions": "^6.3.2"
+  }
+}

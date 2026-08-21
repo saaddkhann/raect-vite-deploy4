@@ -1,0 +1,15 @@
+rules_version = '2';
+service firebase.storage {
+  match /b/{bucket}/o {
+    function admin() {
+      return request.auth != null && firestore.exists(/databases/(default)/documents/admins/$(request.auth.uid));
+    }
+    match /registrations/{registrationId}/{fileName} {
+      allow create: if request.resource.size < 10 * 1024 * 1024
+        && (request.resource.contentType.matches('image/.*') || request.resource.contentType == 'application/pdf');
+      allow read: if admin();
+      allow update, delete: if admin();
+    }
+    match /{allPaths=**} { allow read, write: if false; }
+  }
+}
