@@ -38,7 +38,19 @@ export default function RegistrationForm() {
 
     setBusy(true);
     try {
-      const id = `MGL-${Date.now().toString(36).toUpperCase()}`;
+     {/* const id = `MGL-${Date.now().toString(36).toUpperCase()}`;*/}
+
+const now = new Date();
+
+const date = now.toLocaleDateString("en-GB", {
+  day: "2-digit",
+  month: "short",
+  year: "numeric"
+}).replace(/ /g, "").toUpperCase();
+
+const id = `MGL-${date}`;
+
+
 
       const [ paymentUrl, photoUrl] = await Promise.all([
         
