@@ -1,9 +1,9 @@
-import React, { useEffect, useMemo, useState } from 'react';
-import { collection, doc, getDocs, orderBy, query, updateDoc, addDoc, deleteDoc, serverTimestamp } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
+import { addDoc, collection, deleteDoc, doc, getDocs, orderBy, query, serverTimestamp, updateDoc } from 'firebase/firestore';
+import { useEffect, useMemo, useState } from 'react';
 import * as XLSX from 'xlsx';
-import { auth, db } from '../services/firebase';
 import { defaultTeams } from '../data/tournament';
+import { auth, db } from '../services/firebase';
 
 function Stat({ title, value }) { return <div className="stat"><small>{title}</small><strong>{value}</strong></div>; }
 

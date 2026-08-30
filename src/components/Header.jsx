@@ -1,1 +1,11 @@
-import React from 'react';export default function Header(){return <header><div className="brand">MADANPUR GRAMIN CIRCLE CRICKET LEAGUE</div><nav><a href="#register">Registration</a><a href="#admin">Admin</a></nav></header>}
+export default function Header() {
+  return (
+    <header>
+      <div className="brand">MADANPUR GRAMIN CIRCLE CRICKET LEAGUE</div>
+      <nav>
+        <a href="#register">Registration</a>
+        <a href="#admin">Admin</a>
+      </nav>
+    </header>
+  );
+}

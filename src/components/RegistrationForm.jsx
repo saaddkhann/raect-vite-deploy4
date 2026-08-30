@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
-import { collection, doc, setDoc, serverTimestamp } from 'firebase/firestore';
+import { collection, doc, serverTimestamp, setDoc } from 'firebase/firestore';
+import { useState } from 'react';
+import { battingStyles, bowlingStyles, playingRoles, tournament } from '../data/tournament';
+import { cloudinaryConfigured, uploadToCloudinary } from '../services/cloudinary';
 import { db, firebaseConfigured } from '../services/firebase';
-import { uploadToCloudinary, cloudinaryConfigured } from '../services/cloudinary';
-import { playingRoles, battingStyles, bowlingStyles, tournament } from '../data/tournament';
+import { getPlayerNotificationToken, requestNotificationPermission } from '../services/notifications';
 import { Field, SelectField, Upload } from './FormField';
-import { requestNotificationPermission, getPlayerNotificationToken } from '../services/notifications';
 
 const initialForm = {
   name: '', father: '', dob: '', mobile: '', village: '', aadhaar: '',
@@ -16,7 +16,7 @@ const normalizeMobile = value => value.replace(/\D/g, '').slice(0, 10);
 
 export default function RegistrationForm() {
   const [form, setForm] = useState(initialForm);
-  const [aadhaarFile, setAadhaarFile] = useState(null);
+  {/*const [aadhaarFile, setAadhaarFile] = useState(null); */}
   const [paymentFile, setPaymentFile] = useState(null);
   const [photoFile, setPhotoFile] = useState(null);
   const [busy, setBusy] = useState(false);
@@ -34,14 +34,14 @@ export default function RegistrationForm() {
     if (!cloudinaryConfigured()) return setError('Cloudinary is not configured. Add VITE_CLOUDINARY_CLOUD_NAME and VITE_CLOUDINARY_UPLOAD_PRESET to .env and restart Vite.');
     if (!/^[6-9]\d{9}$/.test(form.mobile)) return setError('Enter a valid 10-digit Indian mobile number.');
     if (!form.name.trim() || !form.father.trim() || !form.village.trim()) return setError('Please complete the required player details.');
-    if (!aadhaarFile || !paymentFile) return setError('Aadhaar card and payment screenshot are required.');
+   {/* if (!aadhaarFile || !paymentFile) return setError('Aadhaar card and payment screenshot are required.');*/}
 
     setBusy(true);
     try {
       const id = `MGL-${Date.now().toString(36).toUpperCase()}`;
 
-      const [aadhaarUrl, paymentUrl, photoUrl] = await Promise.all([
-        uploadToCloudinary(aadhaarFile, `madanpur-league/${id}/aadhaar`, 'aadhaar'),
+      const [ paymentUrl, photoUrl] = await Promise.all([
+        
         uploadToCloudinary(paymentFile, `madanpur-league/${id}/payment`, 'payment'),
         photoFile
           ? uploadToCloudinary(photoFile, `madanpur-league/${id}/photo`, 'photo')
@@ -61,7 +61,7 @@ export default function RegistrationForm() {
         mobile: `+91${form.mobile}`,
         aadhaar: form.aadhaar.replace(/\D/g, '').slice(-4).padStart(4, '*'),
         registrationId: id,
-        aadhaarUrl,
+        
         paymentUrl,
         photoUrl,
         status: 'pending',
@@ -102,13 +102,13 @@ export default function RegistrationForm() {
     <main>
       <section className="hero">
         <div>
-          <p className="eyebrow">MADANPUR GRAMIN CIRCLE CRICKET LEAGUE TOURNAMENT</p>
+          <p className="eyebrow" style={{fontSize: '2.25rem', fontFamily: 'var(--font-secondary)'}}>MADANPUR GRAMIN CIRCLE CRICKET LEAGUE TOURNAMENT</p>
           <h1>Player <em>Registration</em></h1>
-          <p>Submit your player profile, payment proof and identity document. Registration data is stored in Firebase Firestore and uploaded files are stored in Cloudinary.</p>
+          <p>Submit your player profile, payment proof and identity document.</p>
         </div>
         <div className="qr">
-          <img src={tournament.payment.qrImage} alt="Tournament UPI QR Code" />
-          <small>Scan to pay ₹{tournament.payment.registrationFee}</small>
+          <img style={{ maxWidth: '100%', height: 'auto' }} src={tournament.payment.qrImage} alt="Tournament UPI QR Code" />
+          <small style={{ color: 'blue' ,fontSize: '1.25rem' }}>Scan to pay ₹{tournament.payment.registrationFee}</small>
         </div>
       </section>
 
@@ -124,8 +124,8 @@ export default function RegistrationForm() {
         </div>
 
         <div className="grid uploads">
-          <Upload label="Aadhaar Card" required file={aadhaarFile} setFile={setAadhaarFile} />
-          <Upload label="Player Photo" file={photoFile} setFile={setPhotoFile} accept="image/jpeg,image/png,image/webp" preview />
+          {/*<Upload label="Aadhaar Card" required file={aadhaarFile} setFile={setAadhaarFile} /> */}
+          <Upload label="Player Photo" required file={photoFile} setFile={setPhotoFile}  accept="image/jpeg,image/png,image/webp" preview />
           <Upload label="Payment Screenshot" required file={paymentFile} setFile={setPaymentFile} accept="image/jpeg,image/png,image/webp" preview />
         </div>
 
@@ -134,10 +134,10 @@ export default function RegistrationForm() {
           <SelectField label="Playing Role" required value={form.playingRole} onChange={v => update('playingRole', v)} options={playingRoles} />
           <SelectField label="Batting Style" required value={form.battingStyle} onChange={v => update('battingStyle', v)} options={battingStyles} />
           <SelectField label="Bowling Style" value={form.bowlingStyle} onChange={v => update('bowlingStyle', v)} options={bowlingStyles} />
-          <label className="full-width">
+        {/*}  <label className="full-width">
             <span>Previous Cricket Experience</span>
             <textarea maxLength="1000" value={form.previousExperience} placeholder="Teams, tournaments, years played, achievements, etc." onChange={e => update('previousExperience', e.target.value)} />
-          </label>
+          </label> */}
         </div>
 
         <h2>Payment</h2>
@@ -145,7 +145,7 @@ export default function RegistrationForm() {
           <div>
             <b>Registration Fee</b><h3>₹{tournament.payment.registrationFee}</h3>
             <p>Scan the QR code above using any UPI app.</p>
-            <label>UPI ID</label><div className="upi">{tournament.payment.upiId}</div>
+          {/*}  <label>UPI ID</label><div className="upi">{tournament.payment.upiId}</div> */}
           </div>
           <div>
             <Field label="UTR / Transaction Reference" required value={form.utr} onChange={v => update('utr', v)} />

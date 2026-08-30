@@ -3,7 +3,7 @@ export const tournament = {
   payment: {
     registrationFee: 200,
     upiId: 'YOUR-UPI-ID@upi',
-    qrImage: '/payment-qr.png',
+    qrImage: '/chand.png.jpeg',
   },
 };
 export const playingRoles = ['Batter','Bowler','All-Rounder','Wicketkeeper-Batter'];
